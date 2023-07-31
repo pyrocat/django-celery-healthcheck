@@ -1,0 +1,9 @@
+django==3.2
+
+celery==5.1.0
+redis==3.5.3
+flower==1.2.0
+django-celery-beat
+django-health-check
+
+loguru

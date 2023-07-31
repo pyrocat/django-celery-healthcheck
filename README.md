@@ -1,0 +1,1 @@
+ Various approaches of healtchecking for Celery
