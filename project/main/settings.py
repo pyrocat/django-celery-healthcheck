@@ -134,10 +134,10 @@ STATICFILES_DIRS = (os.path.join(BASE_DIR, "static"),)
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
-REDIS_URL = "redis://redis:6379"
+REDIS_URL = os.getenv("REDIS_URL")
 
-CELERY_BROKER_URL = REDIS_URL
-CELERY_RESULT_BACKEND = REDIS_URL
+CELERY_BROKER_URL = os.getenv("CELERY_BROKER")
+CELERY_RESULT_BACKEND = os.getenv("CELERY_BACKEND")
 
 _queues = {
     "first_queue": [
@@ -152,6 +152,8 @@ CELERY_BEAT_SCHEDULER = "django_celery_beat.schedulers:DatabaseScheduler"
 CELERY_TASK_ROUTES = {
     task_name: queue for queue, tasks in _queues.items() for task_name in tasks
 }
+
+# Default is 0, means PeriodicTasks data syncs with celery tasks every 3 minutes
 CELERYBEAT_SYNC_EVERY = 0
 
 HEALTHCHECK_WORKER_TIMEOUT = 30

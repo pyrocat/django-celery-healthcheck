@@ -16,7 +16,7 @@ services:
 
   worker:
     image: *img
-    command: celery -A main worker --loglevel=info -Q "first_queue" --logfile=logs/celery.log
+    command: celery -A main worker --loglevel=info -Q "first_queue" --logfile=logs/celery.log --events
     volumes:
       - ./project:/usr/src/app
     env_file: *env
@@ -26,7 +26,7 @@ services:
 
   second_worker:
     image: *img
-    command: celery -A main worker --loglevel=info -Q "second_queue" --logfile=logs/celery.log
+    command: celery -A main worker --loglevel=info -Q "second_queue" --logfile=logs/celery.log --events
     volumes:
       - ./project:/usr/src/app
     env_file: *env
@@ -49,7 +49,7 @@ services:
 
   dashboard:
     image: *img
-    command: celery -A main flower --port=5555 --broker=redis://redis:6379/0
+    command: celery flower -A main --port=5555 --broker=redis://redis:6379/0
     ports:
       - 5555:5555
     env_file: *env
@@ -62,7 +62,7 @@ services:
 
   healthcheck:
     image: *img
-    command: celery -A main events -c hc_methods.EventsCamera --frequency=2.0
+    command: python3 -m hc_methods.run_monitor
     volumes:
       - ./project:/usr/src/app
     env_file: *env
@@ -73,3 +73,28 @@ services:
       - second_worker
       - beat
 
+  async_hc_server:
+    build: ./server
+    image: async_hc_server
+    ports:
+      - 9009:9001
+    depends_on:
+      - web
+      - redis
+      - worker
+      - second_worker
+      - beat
+
+#  healthcheck:
+#    image: *img
+#    command: celery -A main events -c hc_methods.EventsCamera --frequency=2.0
+#    volumes:
+#      - ./project:/usr/src/app
+#    env_file: *env
+#    depends_on:
+#      - web
+#      - redis
+#      - worker
+#      - second_worker
+#      - beat
+#

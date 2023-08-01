@@ -13,3 +13,6 @@ def just_sleep():
 def sleep_tenfold(times):
     time.sleep(int(times) * 10)
     return True
+
+
+__all__ = ["just_sleep", "sleep_tenfold"]
