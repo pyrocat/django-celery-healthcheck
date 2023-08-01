@@ -10,7 +10,7 @@ from loguru import logger
 from redis import Redis
 
 
-class RedisClient:
+class RedisHandler:
     def __init__(self, db=0):
         self.client = Redis.from_url(f"{settings.REDIS_URL}/{db}")
 
@@ -36,11 +36,11 @@ class HealthcheckStorage:
 
     def set(self, key: str):
         timestamp = timezone.now().isoformat()
-        with RedisClient(self.db) as self.client:
+        with RedisHandler(self.db) as self.client:
             self.client.set(key, timestamp, ex=self.ttl)
 
     def get(self, key) -> datetime:
-        with RedisClient(self.db) as self.client:
+        with RedisHandler(self.db) as self.client:
             value = self.client.get(key)
             if value:
                 return datetime.fromisoformat(value.decode())
@@ -64,7 +64,7 @@ class HealthCheckFiles:
     def get(self, key: str) -> datetime:
         file = self.folder / key
 
-        if not file.exists():
+        if not file.is_file():
             raise HealthRecordNotFound(key)
 
         # file timestamp is naive

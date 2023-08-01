@@ -10,7 +10,7 @@ from health_check.exceptions import (
 from django.conf import settings
 from django_celery_beat.models import PeriodicTask
 
-from ..utils import HealthcheckStorage
+from ..storages import HealthcheckStorage
 
 from loguru import logger
 

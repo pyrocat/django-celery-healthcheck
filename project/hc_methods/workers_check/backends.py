@@ -6,7 +6,7 @@ from health_check.exceptions import HealthCheckException
 
 from django.conf import settings
 
-from ..utils import HealthCheckFiles, HealthRecordNotFound
+from ..storages import HealthCheckFiles, HealthRecordNotFound
 from loguru import logger
 
 
